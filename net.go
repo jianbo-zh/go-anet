@@ -4,21 +4,27 @@ import (
 	"net"
 )
 
+var netDriver NetDriver
+
 type NetDriver interface {
 	Interfaces() ([]net.Interface, error)
 	InterfaceAddrs() ([]net.Addr, error)
 }
 
+func SetNetDriver(driver NetDriver) {
+	netDriver = driver
+}
+
 func Interfaces() ([]net.Interface, error) {
-	if GetNetDriver() == nil {
+	if netDriver == nil {
 		return net.Interfaces()
 	}
-	return GetNetDriver().Interfaces()
+	return netDriver.Interfaces()
 }
 
 func InterfaceAddrs() ([]net.Addr, error) {
-	if GetNetDriver() == nil {
+	if netDriver == nil {
 		return net.InterfaceAddrs()
 	}
-	return GetNetDriver().InterfaceAddrs()
+	return netDriver.InterfaceAddrs()
 }
